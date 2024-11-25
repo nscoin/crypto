@@ -38,6 +38,19 @@
             flex-grow: 1; /* Başlığın ortalanmasını sağlar */
         }
 
+        /* Mobil cihazlar için başlığı gizle */
+        h1.desktop-only {
+            font-size: 36px;
+            color: #3a3a3a;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            h1.desktop-only {
+                display: none;
+            }
+        }
+
         /* Arama kutusu stili */
         #search-box {
             padding: 10px;
@@ -110,10 +123,9 @@
     </style>
 </head>
 <body>
-
     <header>
         <img src="N-removebg-preview.png" alt="NS Coin Logo" id="logo">
-        <h1>Coin Fiyat Takibi</h1>
+        <h1 class="desktop-only">Canlı Coin Fiyat Takibi</h1>
         <input type="text" id="search-box" placeholder="Coin ara...">
     </header>
 
@@ -153,12 +165,12 @@
             { symbol: 'UMAUSDT', name: 'UMA', logo: 'https://cryptologos.cc/logos/uma-uma-logo.png' },
             { symbol: 'LENDUSDT', name: 'Aave', logo: 'https://cryptologos.cc/logos/aave-aave-logo.png' },
             { symbol: 'RENUSDT', name: 'Ren', logo: 'https://cryptologos.cc/logos/ren-ren-logo.png' }
+            // Diğer coin verileri
         ];
 
         const coinContainer = document.getElementById('coin-container');
         const searchBox = document.getElementById('search-box');
 
-        // Her coin için bir kart oluştur
         coins.forEach((coin) => {
             const card = document.createElement('div');
             card.className = 'coin-card';
@@ -174,7 +186,6 @@
             coinContainer.appendChild(card);
         });
 
-        // Binance API'sinden verileri al
         async function fetchData() {
             const apiUrl = 'https://api.binance.com/api/v3/ticker/24hr';
             const response = await fetch(apiUrl);
@@ -191,23 +202,13 @@
                     const changeElement = document.querySelector(`#${coin.symbol} .change`);
                     changeElement.textContent = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
 
-                    // Değişim oranına göre renk
                     changeElement.style.color = change > 0 ? 'green' : 'red';
-                    priceElement.style.color = price < 1 ? 'black' : 'black';
-
-                    // Fiyat düşükse, kartın altına bir ikon ekleyebiliriz.
-                    if (price < 1) {
-                        priceElement.classList.add('positive');
-                    } else {
-                        priceElement.classList.add('negative');
-                    }
                 }
             });
         }
         fetchData();
-        setInterval(fetchData, 5000); // 5 saniyede bir güncelle
+        setInterval(fetchData, 5000);
 
-        // Dinamik arama
         searchBox.addEventListener('input', (e) => {
             const filter = e.target.value.toLowerCase();
             coins.forEach((coin) => {
