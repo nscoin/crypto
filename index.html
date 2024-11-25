@@ -20,35 +20,22 @@
             padding: 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Logo ve başlık arasındaki mesafeyi ayarlar */
+            justify-content: space-between;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         #logo {
             width: 100px;
             height: auto;
-            margin-left: 20px; /* Sola doğru mesafe ekledik */
+            margin-left: 20px;
         }
 
         h1 {
             text-align: center;
-            font-size: 36px; /* Yazıyı büyüttük */
-            color: #3a3a3a;
-            margin: 0;
-            flex-grow: 1; /* Başlığın ortalanmasını sağlar */
-        }
-
-        /* Mobil cihazlar için başlığı gizle */
-        h1.desktop-only {
             font-size: 36px;
             color: #3a3a3a;
             margin: 0;
-        }
-
-        @media (max-width: 768px) {
-            h1.desktop-only {
-                display: none;
-            }
+            flex-grow: 1;
         }
 
         /* Arama kutusu stili */
@@ -104,6 +91,47 @@
             color: #888;
         }
 
+        /* Modal Stili */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: #f4f4f4;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1000px; /* Daha geniş modal */
+            text-align: center;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .coin-card {
@@ -120,24 +148,34 @@
                 width: 150px;
             }
         }
+
     </style>
 </head>
 <body>
+
     <header>
         <img src="N-removebg-preview.png" alt="NS Coin Logo" id="logo">
-        <h1 class="desktop-only">Canlı Coin Fiyat Takibi</h1>
+        <h1>Canlı Coin Fiyat Takibi</h1>
         <input type="text" id="search-box" placeholder="Coin ara...">
     </header>
 
     <div id="coin-container"></div>
 
+    <!-- Modal (Grafik Gösterimi için) -->
+    <div id="chartModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="tradingview-widget-container"></div>
+        </div>
+    </div>
+
+    <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const coins = [
             { symbol: 'BTCUSDT', name: 'Bitcoin', logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png' },
             { symbol: 'ETHUSDT', name: 'Ethereum', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png' },
             { symbol: 'DOGEUSDT', name: 'Dogecoin', logo: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
             { symbol: 'BNBUSDT', name: 'Binance Coin', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png?v=035' },
-            { symbol: 'ADAUSDT', name: 'Cardano', logo: 'https://cryptologos.cc/logos/cardano-ada-logo.png' },
             { symbol: 'XRPUSDT', name: 'Ripple', logo: 'https://cryptologos.cc/logos/xrp-xrp-logo.png?v=035' },
             { symbol: 'LTCUSDT', name: 'Litecoin', logo: 'https://cryptologos.cc/logos/litecoin-ltc-logo.png' },
             { symbol: 'SOLUSDT', name: 'Solana', logo: 'https://cryptologos.cc/logos/solana-sol-logo.png' },
@@ -165,12 +203,13 @@
             { symbol: 'UMAUSDT', name: 'UMA', logo: 'https://cryptologos.cc/logos/uma-uma-logo.png' },
             { symbol: 'LENDUSDT', name: 'Aave', logo: 'https://cryptologos.cc/logos/aave-aave-logo.png' },
             { symbol: 'RENUSDT', name: 'Ren', logo: 'https://cryptologos.cc/logos/ren-ren-logo.png' }
-            // Diğer coin verileri
+            // ... Diğer coinler
         ];
 
         const coinContainer = document.getElementById('coin-container');
         const searchBox = document.getElementById('search-box');
 
+        // Her coin için bir kart oluştur
         coins.forEach((coin) => {
             const card = document.createElement('div');
             card.className = 'coin-card';
@@ -186,6 +225,7 @@
             coinContainer.appendChild(card);
         });
 
+        // Binance API'sinden verileri al
         async function fetchData() {
             const apiUrl = 'https://api.binance.com/api/v3/ticker/24hr';
             const response = await fetch(apiUrl);
@@ -202,13 +242,16 @@
                     const changeElement = document.querySelector(`#${coin.symbol} .change`);
                     changeElement.textContent = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
 
+                    // Değişim oranına göre renk
                     changeElement.style.color = change > 0 ? 'green' : 'red';
+                    priceElement.style.color = price < 1 ? 'black' : 'black';
                 }
             });
         }
         fetchData();
-        setInterval(fetchData, 5000);
+        setInterval(fetchData, 5000); // 5 saniyede bir güncelle
 
+        // Dinamik arama
         searchBox.addEventListener('input', (e) => {
             const filter = e.target.value.toLowerCase();
             coins.forEach((coin) => {
@@ -220,6 +263,49 @@
                 }
             });
         });
+
+        // Modal ve TradingView işlemleri
+        const chartModal = document.getElementById('chartModal');
+        const closeBtn = document.querySelector('.close');
+
+        // Modal'ı kapatma
+        closeBtn.onclick = () => {
+            chartModal.style.display = 'none';
+            document.getElementById('tradingview-widget-container').innerHTML = ''; // TradingView temizleme
+        };
+
+        window.onclick = (event) => {
+            if (event.target === chartModal) {
+                chartModal.style.display = 'none';
+                document.getElementById('tradingview-widget-container').innerHTML = ''; // TradingView temizleme
+            }
+        };
+
+        // Coin kartına tıklandığında TradingView grafiği aç
+        document.querySelectorAll('.coin-card').forEach((card) => {
+            card.addEventListener('click', () => {
+                const symbol = card.id; // Coin sembolü (örnek: BTCUSDT)
+                chartModal.style.display = 'block';
+
+                // TradingView Widget
+                new TradingView.widget({
+                    container_id: 'tradingview-widget-container',
+                    width: '100%',
+                    height: '600', // Yüksekliği 600px olarak ayarlandı
+                    symbol: `BINANCE:${symbol}`, // Binance sembol formatı
+                    interval: '15', // Varsayılan zaman dilimi (15 dakika)
+                    timezone: 'Etc/UTC',
+                    theme: 'light',
+                    style: '1', // 1 = Japon mum çubuğu
+                    locale: 'en',
+                    enable_publishing: false,
+                    allow_symbol_change: false,
+                    save_image: false,
+                    studies: [],
+                });
+            });
+        });
+
     </script>
 </body>
 </html>
