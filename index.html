@@ -213,13 +213,12 @@
     
 
     <header>
+        <a href="">
         <img src="N-removebg-preview.png" alt="NS Coin Logo" id="logo">
+        </a>
         <h1>Canlı Coin Fiyat Takibi</h1>
         <input type="text" id="search-box" placeholder="Coin ara...">
     </header>
-
-    <div id="frame" style="width:728px; height:auto;"><iframe data-aa='2367590' src='//ad.a-ads.com/2367590?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe><a style="display: block; text-align: right; font-size: 12px;" id="preview-link" href="https://aads.com/campaigns/new/?source_id=2367590&source_type=ad_unit&partner=2367590">Advertise here</a></div>
-
 
     <div id="coin-container"></div>
 
@@ -234,7 +233,6 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const coins = [
-const coins = [
     { symbol: 'BTCUSDT', name: 'Bitcoin', logo: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png' },
     { symbol: 'ETHUSDT', name: 'Ethereum', logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png' },
     { symbol: 'DOGEUSDT', name: 'Dogecoin', logo: 'https://assets.coingecko.com/coins/images/5/large/dogecoin.png' },
@@ -258,7 +256,7 @@ const coins = [
     { symbol: 'KSMUSDT', name: 'Kusama', logo: 'https://assets.coingecko.com/coins/images/9567/large/kusama.png' },
     { symbol: 'COMPUSDT', name: 'Compound', logo: 'https://assets.coingecko.com/coins/images/10775/large/COMP.png' },
     { symbol: 'MKRUSDT', name: 'Maker', logo: 'https://assets.coingecko.com/coins/images/1364/large/Mark_Maker.png' },
-    { symbol: 'SUSHIUSDT', name: 'SushiSwap', logo: 'https://assets.coingecko.com/coins/images/12271/large/sushiswap.png' },
+    { symbol: 'SUSHIUSDT', name: 'SushiSwap', logo: 'https://cryptologos.cc/logos/sushiswap-sushi-logo.png?v=040' },
     { symbol: 'ZECUSDT', name: 'Zcash', logo: 'https://assets.coingecko.com/coins/images/486/large/circle-zcash-color.png' },
     { symbol: 'CVCUSDT', name: 'Civic', logo: 'https://assets.coingecko.com/coins/images/788/large/civic.png' },
     { symbol: 'CTSIUSDT', name: 'Cartesi', logo: 'https://assets.coingecko.com/coins/images/11038/large/cartesi.png' },
@@ -266,7 +264,6 @@ const coins = [
     { symbol: 'UMAUSDT', name: 'UMA', logo: 'https://assets.coingecko.com/coins/images/10951/large/UMA.png' },
     { symbol: 'LENDUSDT', name: 'Aave', logo: 'https://assets.coingecko.com/coins/images/12645/large/AAVE.png' },
     { symbol: 'RENUSDT', name: 'Ren', logo: 'https://assets.coingecko.com/coins/images/3139/large/REN.png' }
-];          // ... Diğer coinler
         ];
 
         const coinContainer = document.getElementById('coin-container');
